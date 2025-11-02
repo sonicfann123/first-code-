@@ -1,6 +1,6 @@
 // Genesis-style rhythm prototype with pixel sprites for Sonic, Tails, Knuckles, and an Eggman background finale.
 // Focus: 320x240 pixel canvas, limited palette, sprite-draw routines to mimic Genesis-era visuals.
-// Added: final 30s trio (Sonic + Tails + Knuckles) with Eggman in the background, audio scheduling, visuals and timing.
+// Updated: replaced sonicSprite with a hand-crafted pixel map derived from the provided image and mapped to the existing palette.
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -165,25 +165,27 @@ const eggman = { x: W*0.9, y: H*0.12, active:false };
 let finale = { active:false, startTime:0, endTime:0 };
 
 // Sprites as pixel maps (small grids). Use characters for palette keys.
+// Hand-pixelated Sonic sprite derived from the provided image (20x16)
 const sonicSprite = [
-  "....bbbbbb....",
-  "...bbrrrrbb...",
-  "..bbrrrrrrbb..",
-  ".bbrrrrrrrrbb.",
-  ".bbrfffffrrbb.",
-  "bbrfffffffrrbb",
-  "bbrfffffffrrbb",
-  "bbrfffffffrrbb",
-  ".bbrfffffrrbb.",
-  "..bbrrrrrrbb..",
-  "...bbrrbb.....",
-  "....bbbb......",
-  "....b..b......",
-  "...sss..sss...",
-  "..sso....oss..",
-  "..............."
+  "....................",
+  ".....bbbbbbbbbb.....",
+  "....bbbbbbbbbbb.....",
+  "...bbbbffbbbbb......",
+  "..bbbbfffffbbbbb....",
+  ".bbbbfffrffffbbbf....",
+  ".bbbfrrfffrrffbbf....",
+  ".bbbfrrffffrrffbf....",
+  ".bbbfrrrrrfffrrbf....",
+  "..bbfrrrfffrrrbb....",
+  "...bbrrrrrbbbbb.....",
+  "....bbrr..bbbbb.....",
+  ".....bb...bbbb......",
+  ".....ss...sss.......",
+  ".....ss.....ss......",
+  "...................."
 ];
-const sonicPaletteMap = { 'b': palette.sonicBlue, 'r': palette.flesh, 'f': palette.flesh, 's': palette.shoeRed, '.': null };
+// Palette mapping for sprite: b=blue, f=flesh (face/chest), r=tan/face, s=shoe, .=transparent
+const sonicPaletteMap = { 'b': palette.sonicBlue, 'f': palette.flesh, 'r': palette.flesh, 's': palette.shoeRed, '.': null };
 
 // Tails: 12x12 sprite
 const tailsSprite = [
@@ -339,7 +341,7 @@ function scheduleKnucklesTrio(startTime, beatLength, beats, baseFreq){ if(!audio
   setTimeout(()=>{ sonic.tauntTimer = 1.6; }, msToTaunt);
 }
 
-function scheduleKnucklesNote(t, freq, dur=0.14, gain=0.09){ if(!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.value = freq; g.gain.value = 0.0001; o.connect(g); g.connect(audioCtx.destination); g.gain.setTargetAtTime(gain, t + 0.001, 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.start(t); o.stop(t + dur + 0.02); scheduledOscillators.push(o); }
+function scheduleKnucklesNote(t, freq, dur=0.14, gain=0.09){ if(!audioCtx) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'triangle'; o.frequency.value = freq; g.gain.value = 0.0001; o.connect(g); g.connect(audioCtx.destination); g.gain.setTargetAtTime(gain, t + 0.001, 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.start(t); o.stop(t + dur + 0.02); }
 
 function scheduleEggmanBackgroundSound(startTime, beatLength, beats){ if(!audioCtx) return; // simple low thumps / synth pad to add drama
   for(let i=0;i<beats;i+=2){ const t = startTime + i*beatLength; scheduleChipNote(t, 80, 0.5, 0.06); }
