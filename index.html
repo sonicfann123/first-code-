@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Genesis Rhythm Rumble — Sonic vs You (Fan Prototype)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="ui">
+    <h1>Genesis Rhythm Rumble</h1>
+    <div class="controls">
+      <label>BPM: <input id="bpm" type="range" min="80" max="200" value="130"></label>
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+      <label>Difficulty:
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+    </div>
+    <p class="hint">Use arrow keys to hit notes. Genesis-era vibes: crisp pixels, strong palette, chiptune grooves.</p>
+    <div id="scoreboard">
+      <span id="score">Score: 0</span>
+      <span id="combo">Combo: 0</span>
+      <span id="health">Health: 100</span>
+    </div>
+    <small>Note: Sonic and Tails are trademarks of SEGA — this is fan-made prototype code.</small>
+  </div>
+
+  <div id="game-wrap">
+    <canvas id="game" width="320" height="240"></canvas>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
